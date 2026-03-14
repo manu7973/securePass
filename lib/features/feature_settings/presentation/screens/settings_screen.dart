@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/routes/appRoutes.dart';
 import '../../../../core/widgits/AppTourDialog.dart';
 import '../bloc/settings_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../bloc/settings_event.dart';
 import '../bloc/settings_state.dart';
 import 'package:flutter/services.dart';
@@ -314,7 +315,9 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showAppInfoDialog(BuildContext context) {
+  void _showAppInfoDialog(BuildContext context) async{
+    final info = await PackageInfo.fromPlatform();
+    final version = info.version;
     showDialog(
       context: context,
       builder: (_) => Dialog(
@@ -358,9 +361,9 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 20),
               const Divider(height: 1),
               const SizedBox(height: 12),
-              const Text(
-                'Version 1.0.0',
-                style: TextStyle(fontSize: 13, color: Colors.grey),
+              Text(
+                'Version $version',
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -635,48 +638,61 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _passcodeField({
-    required TextEditingController controller,
-    required String label,
-    required bool obscure,
-    required VoidCallback onToggle,
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscure,
-      keyboardType: TextInputType.number,
-      maxLength: 4,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(4),
-      ],
-      decoration: InputDecoration(
-        labelText: label,
-        counterText: '',
-        filled: true,
-        fillColor: Colors.grey.shade100,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 18,
-          horizontal: 16,
+ Widget _passcodeField({
+  required TextEditingController controller,
+  required String label,
+  required bool obscure,
+  required VoidCallback onToggle,
+}) {
+  return TextField(
+    controller: controller,
+    obscureText: obscure,
+    keyboardType: TextInputType.number,
+    maxLength: 4,
+    inputFormatters: [
+      FilteringTextInputFormatter.digitsOnly,
+      LengthLimitingTextInputFormatter(4),
+    ],
+    decoration: InputDecoration(
+      labelText: label,
+
+      // label colors
+      labelStyle: const TextStyle(color: Colors.grey),
+      floatingLabelStyle: const TextStyle(
+        color: Colors.blueAccent,
+        fontWeight: FontWeight.w600,
+      ),
+
+      counterText: '',
+      filled: true,
+      fillColor: Colors.grey.shade100,
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 18,
+        horizontal: 16,
+      ),
+      suffixIcon: IconButton(
+        icon: Icon(
+          obscure
+              ? Icons.visibility_off_outlined
+              : Icons.visibility_outlined,
+          color: Colors.grey[600],
         ),
-        suffixIcon: IconButton(
-          icon: Icon(
-            obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-            color: Colors.grey[600],
-          ),
-          onPressed: onToggle,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.black, width: 1.4),
+        onPressed: onToggle,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(
+          color: Colors.blueAccent,
+          width: 1.4,
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   void _showError(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(

@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:SecurePass/features/feature_home/domain/UpdatePasswordUseCase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widget_previews.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'core/observers/AppLifecycleObserver.dart';
 import 'core/routes/appRoutes.dart';
+import 'core/security/HiveEncryptionService.dart';
 import 'core/storage/secureStorage/login_passcode_secure.dart';
 import 'core/storage/sharedPref/shared_Pref.dart';
 import 'features/feature_home/data/PasswordLocalDataSourceImpl.dart';
@@ -37,7 +39,10 @@ void main() async {
   await SharedPref.init();
 
   //Status bar - Ios
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+  );
 
   // Initialize your data sources & repository
   final secureStorageDS = LoginPasscodeSecure();
@@ -71,8 +76,13 @@ void main() async {
   final hasPasscodeUseCase = HasPasscodeUseCase(loginAuthRepo);
   final hasPasscode = await hasPasscodeUseCase();
 
-  // 🏠 HOME (Vault) setup
-  final passwordBox = await Hive.openBox<PasswordModel>('passwords');
+  // final passwordBox = await Hive.openBox<PasswordModel>('passwords');
+  final key = await HiveEncryptionService.getEncryptionKey();
+  final passwordBox = await Hive.openBox<PasswordModel>(
+    'passwords',
+    encryptionCipher: HiveAesCipher(key),
+  );
+
   final passwordLocalDS = PasswordLocalDataSourceImpl(passwordBox);
   final passwordRepository = PasswordRepositoryImpl(passwordLocalDS);
 

@@ -18,18 +18,25 @@ class PasswordCard extends StatefulWidget {
 class _PasswordCardState extends State<PasswordCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _scale;
 
   @override
   void initState() {
     super.initState();
 
-    // Animation controller for heart tap
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
-      lowerBound: 0.7,
-      upperBound: 1.2,
-      value: 1.0,
+    );
+
+    _scale = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+      ),
     );
   }
 
@@ -40,8 +47,13 @@ class _PasswordCardState extends State<PasswordCard>
   }
 
   void _toggleFavorite(BuildContext context) {
-    _controller.forward().then((_) => _controller.reverse());
-    context.read<PasswordBloc>().add(ToggleFavoritePassword(widget.item));
+    _controller.forward().then((_) {
+      _controller.reverse();
+    });
+
+    context.read<PasswordBloc>().add(
+          ToggleFavoritePassword(widget.item),
+        );
   }
 
   @override
@@ -94,8 +106,9 @@ class _PasswordCardState extends State<PasswordCard>
                 ),
                 child: Icon(icon, color: Colors.white, size: 25),
               ),
+
               const SizedBox(width: 16),
-              // Site & username
+              /// Site & Username
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -127,14 +140,14 @@ class _PasswordCardState extends State<PasswordCard>
               ),
               // Favorite Heart
               ScaleTransition(
-                scale: _controller,
+                scale: _scale,
                 child: IconButton(
                   icon: Icon(
                     widget.item.isfav
                         ? Icons.favorite_rounded
                         : Icons.favorite_border_rounded,
                     color: widget.item.isfav ? Colors.redAccent : Colors.grey,
-                    size: 28,
+                    size: 25,
                   ),
                   onPressed: () => _toggleFavorite(context),
                   splashRadius: 24,

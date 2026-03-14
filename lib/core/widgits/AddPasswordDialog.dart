@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../features/feature_home/domain/PasswordEntity.dart';
@@ -34,7 +33,6 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
     super.dispose();
   }
 
-  // 🔐 Password generator (12–15 chars)
   String _generatePassword() {
     const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
@@ -73,8 +71,7 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-    final maxHeight =
-        MediaQuery.of(context).size.height * 0.75; // max 75% of screen
+    final maxHeight = MediaQuery.of(context).size.height * 0.75;
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -138,7 +135,7 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
 
                     const SizedBox(height: 18),
 
-                    // Password Field
+                    /// Password Field
                     TextFormField(
                       controller: passCtrl,
                       obscureText: _obscurePassword,
@@ -154,6 +151,11 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
                           : null,
                       decoration: InputDecoration(
                         labelText: 'Password',
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        floatingLabelStyle: const TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.w600,
+                        ),
                         prefixIcon: const Icon(
                           Icons.lock_outline,
                           color: Colors.blueAccent,
@@ -177,6 +179,13 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
                           borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(
+                            color: Colors.blueAccent,
+                            width: 1.5,
+                          ),
                         ),
                       ),
                     ),
@@ -279,12 +288,24 @@ class _AddPasswordDialogState extends State<AddPasswordDialog> {
           v == null || v.trim().isEmpty ? '$label is required' : null,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: const TextStyle(color: Colors.grey),
+        floatingLabelStyle: const TextStyle(
+          color: Colors.blueAccent,
+          fontWeight: FontWeight.w600,
+        ),
         prefixIcon: Icon(icon, color: Colors.blueAccent),
         filled: true,
         fillColor: Colors.grey.shade100,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: Colors.blueAccent,
+            width: 1.5,
+          ),
         ),
       ),
     );

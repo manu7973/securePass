@@ -2,7 +2,7 @@ name: SecurePass
 description: "This app is to safely keep your passwords in your device storage without any internet interactions keeping passwords safe within your device."
 
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.1.0
 
 environment:
   sdk: ^3.10.3
@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  package_info_plus: ^8.0.0
 
   # State management
   flutter_bloc: ^9.1.1
