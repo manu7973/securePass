@@ -81,7 +81,12 @@ class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
         .where((p) => p.site.toLowerCase().contains(query))
         .toList();
 
-    emit(filtered.isEmpty ? PasswordEmpty() : PasswordLoaded(filtered));
+    // emit(filtered.isEmpty ? PasswordEmpty() : PasswordLoaded(filtered));
+    emit(
+      filtered.isEmpty
+          ? PasswordEmpty(isFiltered: _showFavoritesOnly)
+          : PasswordLoaded(filtered),
+    );
   }
 
   Future<void> _onToggleFavorite(
@@ -119,6 +124,12 @@ class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
         ? _allPasswords.where((p) => p.isfav).toList()
         : _allPasswords;
 
-    emit(list.isEmpty ? PasswordEmpty() : PasswordLoaded(list));
+    // emit(list.isEmpty ? PasswordEmpty() : PasswordLoaded(list));
+    if (list.isEmpty) {
+      emit(PasswordEmpty(isFiltered: _showFavoritesOnly));
+    } else {
+      emit(PasswordLoaded(list));
+    }
   }
+
 }

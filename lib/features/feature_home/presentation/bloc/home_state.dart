@@ -11,4 +11,7 @@ class PasswordLoaded extends PasswordState {
   PasswordLoaded(this.passwords);
 }
 
-class PasswordEmpty extends PasswordState {}
+class PasswordEmpty extends PasswordState {
+  final bool isFiltered;
+  PasswordEmpty({this.isFiltered = false});
+}
